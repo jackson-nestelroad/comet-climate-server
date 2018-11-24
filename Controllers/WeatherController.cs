@@ -29,11 +29,25 @@ namespace comet_climate_server.Controllers
                 .ToList();
 
             // Get the saved error flags
-            var _Errors = _context.Errors
+            var _Errors = _context.Errors.AsNoTracking()
                 .FromSql("SELECT * FROM \"Errors\" ORDER BY id DESC LIMIT 1")
                 .ToList();
+
+            // Errors table is empty, so add the data
+            if(_Errors.Count == 0)
+            {
+                _Errors.Add(new Errors 
+                    { 
+                        id = 1, 
+                        time = DateTime.Now, 
+                        weather = false, 
+                        twitter = false 
+                    });
+                this._context.Errors.Add(_Errors[0]);
+                this._context.SaveChanges();
+            }
                 
-            // Difference between  the last update and now
+            // Difference between the last update and now
             double difference = _Weather.Count != 0 ? 
                 DateTime.Now.Subtract(_Weather[0].last_updated).TotalMilliseconds : 0;
 
@@ -43,12 +57,23 @@ namespace comet_climate_server.Controllers
                 // If we do not have data or the data is stale (10 minutes old)
                 if(_Weather.Count == 0 || difference > 10*60*1000)
                 {
-                    // dbContext.Entry(entity).State = EntityState.Detached;
-                    //_context.Entry(_context.Weather).State = EntityState.Detached;
-                    Weather newWeather = WeatherScraper.scrape(_Weather[0]);
+                    Weather oldWeather = _Weather.Count == 0 ? new Weather {
+                        id = 1,
+                        temperature = 0,
+                        condition = "None",
+                        high = 0,
+                        low = 0,
+                        wind_speed = 0,
+                        wind_direction = "None",
+                        wind_chill = 0,
+                        precipitation = 0,
+                        forecast = new int[5],
+                        last_updated = DateTime.Now
+                    } : _Weather[0];
+                    Weather newWeather = WeatherScraper.scrape(oldWeather);
 
                     // We got the exact same data back, so an error must have occurred in scraping
-                    if(newWeather == _Weather[0])
+                    if(newWeather == oldWeather)
                     {
                         // Set error flag
                         _Errors[0].weather = true;
@@ -60,7 +85,14 @@ namespace comet_climate_server.Controllers
                     // Update database with new, scraped data
                     else
                     {
-                        this._context.Weather.Update(newWeather);
+                        if(_Weather.Count == 0)
+                        {
+                            this._context.Weather.Add(newWeather);
+                        }
+                        else
+                        {
+                            this._context.Weather.Update(newWeather);
+                        }
                         this._context.SaveChanges();
                     }
                 }
@@ -89,9 +121,7 @@ namespace comet_climate_server.Controllers
                         forecast = weather.forecast,
                         last_updated = weather.last_updated
                     },
-                    errors = new {
-                        weather = errors.weather
-                    }
+                    error = errors.weather
                 }).ToList();
             return query;
             // return this._context.Weather.ToList();

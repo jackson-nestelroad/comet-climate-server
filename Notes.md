@@ -27,3 +27,20 @@
 - I ran into trouble when creating a new Weather object in the WeatherScraper. It ended up creating an alias (another reference) to the same object opposed to copying the old data to duplicate object.
 - With multiple objects with the same ID tag (since we are only wanting to update the data), I ran into a few errors regarding the DbContext and its tracking. 
 - I found out the simplest fix ever: attach `.AsNoTracking().` to my `.FromSql()` object in the WeatherController constructor to detach it.
+---
+- At this point, I wanted to test how the server would be deployed before building the other half of the API.
+- Wrote the Dockerfile.
+- `heroku container:login`
+- In /out (after publishing directory)
+    - `dotnet publish -c Release -o out`
+    - `cd out`
+- `heroku container:push --app=comet-climate-server web`
+- `heroku container:release --app=comet-climate-server web`
+- Successfully deployed the first half of the API!
+---
+- TO DO
+- Write Twitter side
+- Write default (wrong URL)
+- Write exception handling for production
+- Write CORS
+- Write authentication?

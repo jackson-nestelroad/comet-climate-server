@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Npgsql;
 using WebAPI.Models;
 
 namespace comet_climate_server
@@ -28,10 +29,33 @@ namespace comet_climate_server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            System.Diagnostics.Debug.WriteLine(Configuration["DATABASE_URL"]);
+
+            Uri databaseUri;
+            // Production environment - use Heroku string
+            if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {
+                databaseUri = new Uri(Environment.GetEnvironmentVariable("DATABASE_URL"));
+            }
+            // Development environment - use Configuration string
+            else
+            {
+                databaseUri = new Uri(Configuration["DATABASE_URL"]);
+            }
+            // Build connection string
+            var connectionString = new NpgsqlConnectionStringBuilder
+            {
+                Host = databaseUri.Host,
+                Port = databaseUri.Port,
+                Username = databaseUri.UserInfo.Split(':')[0],
+                Password = databaseUri.UserInfo.Split(':')[1],
+                Database = databaseUri.LocalPath.TrimStart('/'),
+                IntegratedSecurity = true,
+                Pooling = true
+            };
+
             // Add scoped connection to PostgreSQL 
             services.AddEntityFrameworkNpgsql().AddDbContext<WebAPIContext>(options => 
-                options.UseNpgsql(Configuration.GetConnectionString("MyWebApiConnection")), ServiceLifetime.Scoped);
+                options.UseNpgsql(connectionString.ToString()), ServiceLifetime.Scoped);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
