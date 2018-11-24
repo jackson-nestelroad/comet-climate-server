@@ -1,8 +1,10 @@
 /.vscode
 /bin
 /obj
-/out
 /Migrations
 /Properties
 /wwwroot
-*.json
+out/*.json
+*.dll
+*.pdb
+*.config
