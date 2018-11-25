@@ -38,9 +38,16 @@
 - `heroku container:release --app=comet-climate-server web`
 - Successfully deployed the first half of the API!
 ---
+- The Twitter API now takes days to review usage...
+---
+- https://www.devtrends.co.uk/blog/handling-errors-in-asp.net-core-web-api
+    - Good way to handle errors if searching/validating data.
+    - Our API only involves two simple GET requests, however, so we only need a single error for calling an invalid page.
+---
+- I created a wildcard route (DefaultController) to throw a 404 for a bad request.
+- I added global exception handling that sends a 500 (or other) error to the user (ErrorController).
+---
 - TO DO
 - Write Twitter side
-- Write default (wrong URL)
-- Write exception handling for production
 - Write CORS
-- Write authentication?
+- Write authentication
