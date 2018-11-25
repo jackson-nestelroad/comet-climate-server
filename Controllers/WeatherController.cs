@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 using WebAPI.Scrapers;
 
-namespace comet_climate_server.Controllers
+namespace Comet.Climate.Server.Controllers
 {
     [Route("/weather")]
     [ApiController]
@@ -25,12 +25,12 @@ namespace comet_climate_server.Controllers
             // .AsNoTracking() so we can create a new Weather object to pass to the database
             // with the same ID number
             var _Weather = _context.Weather.AsNoTracking()
-                .FromSql("SELECT * FROM \"Weather\" LIMIT 1")
+                .FromSql("SELECT * FROM \"Weather\" WHERE id = 1")
                 .ToList();
 
             // Get the saved error flags
             var _Errors = _context.Errors.AsNoTracking()
-                .FromSql("SELECT * FROM \"Errors\" ORDER BY id DESC LIMIT 1")
+                .FromSql("SELECT * FROM \"Errors\" WHERE id = 1")
                 .ToList();
 
             // Errors table is empty, so add the data
@@ -101,7 +101,7 @@ namespace comet_climate_server.Controllers
 
         // GET /weather
         [HttpGet]
-        public ActionResult<IEnumerable<object>> Get()
+        public IActionResult Get()
         {
             // Query and format our data
             var query = (
@@ -109,6 +109,8 @@ namespace comet_climate_server.Controllers
                 join errors in _context.Errors on weather.id equals errors.id
                 select new { 
                     success = true,
+                    reason = false,
+                    code = System.Net.HttpStatusCode.OK,
                     results = new {
                         temperature = weather.temperature,
                         condition = weather.condition,
@@ -119,12 +121,11 @@ namespace comet_climate_server.Controllers
                         wind_chill = weather.wind_chill,
                         precipitation = weather.precipitation,
                         forecast = weather.forecast,
-                        last_updated = weather.last_updated
-                    },
-                    error = errors.weather
-                }).ToList();
-            return query;
-            // return this._context.Weather.ToList();
+                        last_updated = weather.last_updated,
+                        error = errors.weather
+                    }
+                }).ToArray();
+            return Ok(query[0]);
         }
     }
 }
