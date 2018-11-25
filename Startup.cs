@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Options;
 using Npgsql;
 using WebAPI.Models;
 
-namespace comet_climate_server
+namespace Comet.Climate.Server
 {
     public class Startup
     {
@@ -69,7 +70,9 @@ namespace comet_climate_server
             // Production (Heroku) environment
             else
             {
-                // Use custom exception handler https://docs.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-2.1
+                // Use custom exception handler
+                app.UseStatusCodePagesWithReExecute("/error");
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
 
