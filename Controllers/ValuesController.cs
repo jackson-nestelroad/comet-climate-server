@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace comet_climate_server.Controllers
+namespace Comet.Climate.Server.Controllers
 {
     [Route("api/values")]
     [ApiController]

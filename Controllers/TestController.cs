@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using HtmlAgilityPack;
 using WebAPI.Models;
 
-namespace comet_climate_server.Controllers
+namespace Comet.Climate.Server.Controllers
 {
     [Route("test")]
     [ApiController]

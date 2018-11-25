@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace comet_climate_server
+namespace Comet.Climate.Server
 {
     public class Program
     {
