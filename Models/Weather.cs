@@ -11,7 +11,8 @@ namespace WebAPI.Models
         public string wind_direction { get; set; }
         public int wind_chill { get; set; }
         public int precipitation { get; set; }
-        public int[] forecast { get; set; }
+        public int[] forecastTemp { get; set; }
+        public int[] forecastPrec { get; set; }
         public System.DateTime last_updated { get; set; }
     }
 }

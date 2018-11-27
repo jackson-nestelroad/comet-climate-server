@@ -17,7 +17,7 @@ namespace Comet.Climate.Server.Controllers
 
         // Constructor that runs with each request to the API
         public WeatherController(WebAPIContext context)
-        {             
+        {
             // Get the database context
             this._context = context;
 
@@ -67,7 +67,8 @@ namespace Comet.Climate.Server.Controllers
                         wind_direction = "None",
                         wind_chill = 0,
                         precipitation = 0,
-                        forecast = new int[5],
+                        forecastTemp = new int[5],
+                        forecastPrec = new int[5],
                         last_updated = DateTime.Now
                     } : _Weather[0];
                     Weather newWeather = WeatherScraper.scrape(oldWeather);
@@ -103,6 +104,7 @@ namespace Comet.Climate.Server.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            var headers = this.Request.Headers;
             // Query and format our data
             var query = (
                 from weather in _context.Weather
@@ -120,7 +122,8 @@ namespace Comet.Climate.Server.Controllers
                         wind_direction = weather.wind_direction,
                         wind_chill = weather.wind_chill,
                         precipitation = weather.precipitation,
-                        forecast = weather.forecast,
+                        forecastTemp = weather.forecastTemp,
+                        forecastPrec = weather.forecastPrec,
                         last_updated = weather.last_updated,
                         error = errors.weather
                     }

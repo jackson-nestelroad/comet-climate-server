@@ -9,7 +9,9 @@ namespace WebAPI.Models
         public string user_id { get; set; }
         public string user_name { get; set; }
         public string user_screen_name { get; set; }
-        public string user_background_image { get; set; }
+        public string user_profile_image { get; set; }
+        public int likes { get; set; }
+        public int retweets { get; set; }
         public bool retweeted { get; set; }
         public System.DateTime last_updated { get; set; }
     }

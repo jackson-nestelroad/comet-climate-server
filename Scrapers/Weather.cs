@@ -54,14 +54,24 @@ namespace WebAPI.Scrapers
             if(document2.ParseErrors == null)
                 return oldWeather;
 
-            newWeather.forecast = new int[5];
-            // Update forecast
+            newWeather.forecastTemp = new int[5];
+            // Update temperature forecast
             for(int row = 3; row < 8; row++)
             {
                 var node = document2.DocumentNode.SelectNodes("//table[6]/tr[4]/td[" + row + "]");
                 if(node == null)
                     return oldWeather;
-                newWeather.forecast[row - 3] = int.Parse(node[0].InnerText);
+                newWeather.forecastTemp[row - 3] = int.Parse(node[0].InnerText);
+            }
+
+            newWeather.forecastPrec = new int[5];
+            // Update precipitation forecast
+            for(int row = 3; row < 8; row++)
+            {
+                var node = document2.DocumentNode.SelectNodes("//table[6]/tr[11]/td[" + row + "]");
+                if(node == null)
+                    return oldWeather;
+                newWeather.forecastPrec[row - 3] = int.Parse(node[0].InnerText);
             }
 
             // Update wind chill

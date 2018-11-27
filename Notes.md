@@ -47,7 +47,9 @@
 - I created a wildcard route (DefaultController) to throw a 404 for a bad request.
 - I added global exception handling that sends a 500 (or other) error to the user (ErrorController).
 ---
-- TO DO
-- Write Twitter side
-- Write CORS
-- Write authentication
+- Added CORS. That was easy!
+---
+- I spent around three hours today researching and messing a bit with header authorization. 
+- I cannot really figure it out and it is outside of this project, so for now I am going to leave the API unauthorized.
+- I may return to this idea in the future.
+---
