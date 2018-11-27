@@ -31,6 +31,13 @@ namespace Comet.Climate.Server
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            // Allow requests from any origin
+            services.AddCors(options => {
+                options.AddPolicy("AllowAllOrigins", builder => {
+                    builder.AllowAnyOrigin();
+                });
+            });
+
             Uri databaseUri;
             // Production environment - use Heroku string
             if(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
