@@ -1,6 +1,7 @@
 /.vscode
 /bin
 /obj
+/other
 /Migrations
 /Properties
 /wwwroot
