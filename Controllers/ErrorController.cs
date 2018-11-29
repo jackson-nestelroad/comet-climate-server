@@ -25,10 +25,13 @@ namespace Comet.Climate.Server.Controllers
 
             // Get reason for the error based on the code
             string reason;
-            switch(statusCode)
+            switch((int) statusCode)
             {
-                case HttpStatusCode.OK: reason = "Invalid request."; break;
-                case HttpStatusCode.InternalServerError: reason = "Internal server error."; break;
+                case 400: reason = "Bad request."; break;
+                case 401: reason = "Unauthorized."; break;
+                case 404: reason = "Not found."; break;
+                case 500: reason = "Internal server error."; break;
+                case 510: reason = "Twitter bearer token error."; break;
                 default: reason = "Unknown."; break;
             }
 
