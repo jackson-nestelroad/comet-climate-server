@@ -104,7 +104,6 @@ namespace Comet.Climate.Server.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var headers = this.Request.Headers;
             // Query and format our data
             var query = (
                 from weather in _context.Weather
@@ -122,11 +121,11 @@ namespace Comet.Climate.Server.Controllers
                         wind_direction = weather.wind_direction,
                         wind_chill = weather.wind_chill,
                         precipitation = weather.precipitation,
-                        forecastTemp = weather.forecastTemp,
-                        forecastPrec = weather.forecastPrec,
+                        forecast_temp= weather.forecastTemp,
+                        forecast_prec = weather.forecastPrec,
                         last_updated = weather.last_updated,
-                        error = errors.weather
-                    }
+                    },
+                    error_flag = errors.weather
                 }).ToArray();
             return Ok(query[0]);
         }
