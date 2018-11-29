@@ -53,3 +53,5 @@
 - I cannot really figure it out and it is outside of this project, so for now I am going to leave the API unauthorized.
 - I may return to this idea in the future.
 ---
+- Wrote TwitterController.cs <-> TwitterScraper.cs <-> TwitterToken.cs.
+- Twitter's API is very complicated to authenticate.

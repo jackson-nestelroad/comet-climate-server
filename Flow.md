@@ -41,13 +41,13 @@
             * If there is no weather data or the difference in milliseconds is greater than ten minutes,
                 * Save the old weather data in a Weather class instance.
                 * Call the **WeatherScraper** class' scrape function to get new weather data.
-                    * Scrapers/Weather.cs
+                    * Scrapers/WeatherScraper.cs
                         * Send a GET request to the National Weather Service's weather page for Dallas, TX.
-                        * Return the oldWeather data on any errors.
+                        * Return the old weather data on any errors.
                         * Create a new Weather instance with the same ID (1).
                         * Use XPath nodes to get the temperature, condition, high, and low.
                         * Send a GET request to the National Weather Service's forecast page for Dallas, TX.
-                        * Return the oldWeather data on any errors.
+                        * Return the old weather data on any errors.
                         * Use XPath nodes to get the 5-hour forecast, wind chill, wind speed, wind direction, and precipiation potential.
                         * Update the last updated column with the current timestamp.
                         * Return the new Weather object.
@@ -59,6 +59,34 @@
             * If weather data exists and is up to date,
                 * Query the Weather and Errors table together.
                 * Return a JSON object including if the request was successful, the HTTP code, the weather data, and the weather error flag.
-    * Navigation to */twitter - Controllers/TwitterController.cs
+    * Navigation to */twitter* - Controllers/TwitterController.cs
+        * Get WebAPIContext to connect to database.
+        * Get Twitter data.
+        * Get errors data.
+        * If the Errors table is empty, add the required data to the database.
+        * Get the difference in milliseconds between now and the Twitter data's last update.
+        * If the Twitter error flag is not set,
+            * If difference between in milliseconds is greater than ten minutes or is invalid,
+                * Save the old Twitter data in a List, or create sample data to overwrite.
+                * Call the **TwitterScraper** class' scrape function to get new Twitter data.
+                    * Scrapers/TwitterScraper.cs
+                        * Send a POST HTTP request with Consumer Secrets to receieve a Bearer Token to access the API.
+                        * Send a GET HTTP request with the Bearer Token to receive the last 10 Tweets from @UT_Dallas.
+                        * Return the old Twitter data on any errors.
+                        * Parse the response data as a JSON object.
+                        * Receieve the necessary data for the 10 Tweets to create a List of 10 Twitter objects.
+                        * Return the new List of Twitter objects.
+                * If the new Twitter data is the same as the old Twitter data,
+                    * Set the Twitter error flag in the Errors table to true.
+                    * Update the time column in the Errors table to the current timestamp.
+                * If the new Twitter data is not the same as the old Twitter data,
+                    * Replace all of the old Twitter data with the new Twitter data in the database.
+            * If Twitter data exists and is up to date,
+                * Query the Weather and Errors table together.
+                * Return a JSON object including if the request was successful, the HTTP code, the full array of Twitter data, and the Twitter error flag.
     * Navigation to an invalid page - Controllers/DefaultController.cs
+        * Return a formatted JSON with a 404 error code.
     * Internal Server Errors - Controllers/ErrorController.cs
+        * Get the HTTP status code.
+        * Get the reason for the error based on the HTTP status code.
+        * Return a formatted JSON result with the HTTP status code and reason.
