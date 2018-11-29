@@ -24,7 +24,7 @@ namespace WebAPI.Scrapers
 
                 // Start a new request to the Twitter API
                 HttpWebRequest request = (HttpWebRequest) WebRequest.Create(
-                    "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=36989808&tweet_mode=extended&count=" + numTweets);
+                    "https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=36989808&tweet_mode=extended&exclude_replies=true");
                 request.Method = "GET";
                 request.Headers.Add("Authorization", "Bearer " + bearerToken);
 
