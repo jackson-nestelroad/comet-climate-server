@@ -53,29 +53,48 @@ namespace WebAPI.Scrapers
                         DateTime createdAt = DateTime.ParseExact(tweetObject[tweet]["created_at"].ToString(),
                             "ddd MMM dd HH:mm:ss zzz yyyy", new System.Globalization.CultureInfo("en-US"));
 
+                        // Check if tweet was retweeted
+                        bool retweeted = tweetObject[tweet].SelectToken("retweeted_status") != null;
+
                         // Slightly more complicated to get the number of likes
-                        int likes = tweetObject[tweet].SelectToken("retweeted_status") != null ? 
+                        int likes = retweeted ? 
                             tweetObject[tweet]["retweeted_status"]["favorite_count"].ToObject<int>() : 
                             tweetObject[tweet]["favorite_count"].ToObject<int>();
 
                         // Also complicated to get full retweet text
-                        string fullText = tweetObject[tweet].SelectToken("retweeted_status") != null ? 
-                            tweetObject[tweet]["retweeted_status"]["full_text"].ToString() : 
+                        string full_text = retweeted ? 
+                            // "RT @" + tweetObject[tweet]["retweeted_status"]["user"]["screen_name"] + ": " + tweetObject[tweet]["retweeted_status"]["full_text"].ToString() : 
+                            tweetObject[tweet]["retweeted_status"]["full_text"].ToString() :
                             tweetObject[tweet]["full_text"].ToString();
+
+                        // Get the user retweeted from if appplicable
+                        string user_id = retweeted ? 
+                            tweetObject[tweet]["retweeted_status"]["user"]["id_str"].ToString() : 
+                            tweetObject[tweet]["user"]["id_str"].ToString();
+                        string user_name = retweeted ? 
+                            tweetObject[tweet]["retweeted_status"]["user"]["name"].ToString() : 
+                            tweetObject[tweet]["user"]["name"].ToString();
+                        string user_screen_name = retweeted ? 
+                            tweetObject[tweet]["retweeted_status"]["user"]["screen_name"].ToString() : 
+                            tweetObject[tweet]["user"]["screen_name"].ToString();
+                        string user_profile_image = retweeted ? 
+                            tweetObject[tweet]["retweeted_status"]["user"]["profile_image_url"].ToString() : 
+                            tweetObject[tweet]["user"]["profile_image_url"].ToString();
+                            
 
                         // Add the new data
                         newTwitter.Add(new Twitter {
                             id = tweet + 1,
                             tweet_id = tweetObject[tweet]["id_str"].ToString(),
                             created_at = createdAt,
-                            text = fullText,
-                            user_id = tweetObject[tweet]["user"]["id_str"].ToString(),
-                            user_name = tweetObject[tweet]["user"]["name"].ToString(),
-                            user_screen_name = tweetObject[tweet]["user"]["screen_name"].ToString(),
-                            user_profile_image = tweetObject[tweet]["user"]["profile_image_url"].ToString(),
+                            text = full_text,
+                            user_id = user_id,
+                            user_name = user_name,
+                            user_screen_name = user_screen_name,
+                            user_profile_image = user_profile_image,
                             likes = likes,
                             retweets = tweetObject[tweet]["retweet_count"].ToObject<int>(),
-                            retweeted = tweetObject[tweet].SelectToken("retweeted_status") != null,
+                            retweeted = retweeted,
                             last_updated = Now
                         });
                     }
